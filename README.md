@@ -1,8 +1,19 @@
-# 🌱 PlantPulse
+# PlantPulse
 
 Sistema full-stack para simulação, persistência, análise e visualização de sinais de sensores de plantas.
 
-## 📊 Demonstração
+## Demo
+
+- Frontend: [https://plant-pulse-jmsp.vercel.app/dashboard](https://plant-pulse-jmsp.vercel.app/dashboard)
+- API healthcheck: [https://plantpulse-backend-4nvd.onrender.com/api/v1/health](https://plantpulse-backend-4nvd.onrender.com/api/v1/health)
+
+Ambiente publicado:
+
+- Frontend hospedado na Vercel.
+- Backend FastAPI hospedado no Render.
+- Banco PostgreSQL hospedado no Neon.
+
+## Demonstração
 
 ### Visão geral do dashboard
 
@@ -70,6 +81,8 @@ API FastAPI
 Dashboard Next.js
 ```
 
+Em produção, esse fluxo usa Neon para o PostgreSQL, Render para a API e Vercel para o dashboard.
+
 ## Tecnologias
 
 ### Backend
@@ -88,6 +101,12 @@ Dashboard Next.js
 - TailwindCSS
 - Recharts
 
+### Deploy
+
+- Render
+- Vercel
+- Neon
+
 ## Funcionalidades
 
 - Geração de sinais simulados com padrão oscilatório, ruído leve e seed opcional.
@@ -104,10 +123,10 @@ Dashboard Next.js
 ## Fluxo de dados
 
 ```text
-Simulação → CSV → PostgreSQL → API → Dashboard
+Simulação -> CSV -> PostgreSQL -> API -> Dashboard
 ```
 
-Etapas do fluxo:
+Etapas do fluxo local:
 
 1. Criar o banco PostgreSQL.
 2. Aplicar o schema da tabela `plant_signals`.
@@ -264,8 +283,9 @@ A busca por `sensor_id` é aplicada ao clicar em `Atualizar dados`, evitando cha
 
 ## Observações
 
+- O projeto está publicado com frontend na Vercel, backend no Render e banco PostgreSQL no Neon.
 - O projeto não usa ORM; a comunicação com PostgreSQL é feita com `psycopg2`.
-- A API possui CORS configurado para `http://localhost:3000` e `http://127.0.0.1:3000`.
+- A API possui CORS configurado para o ambiente local e para o domínio público da Vercel.
 - A análise é estatística e interpretável, sem uso de IA ou machine learning.
 - A proteção contra duplicatas depende da restrição única em `(sensor_id, signal_timestamp)`.
 - Para tabelas com duplicatas já existentes, o `ALTER TABLE` de unicidade pode falhar até que os dados sejam corrigidos.
@@ -276,11 +296,10 @@ A busca por `sensor_id` é aplicada ao clicar em `Atualizar dados`, evitando cha
 - Adicionar testes automatizados para o frontend.
 - Criar filtros por intervalo de datas.
 - Melhorar comparação entre sensores.
-- Preparar deploy do backend e do frontend.
-- Documentar um fluxo de demonstração com dados de exemplo.
+- Adicionar monitoramento simples para disponibilidade da API.
 
 ## Status
 
-Projeto funcional para portfólio técnico.
+Projeto funcional e publicado para portfólio técnico.
 
-O fluxo completo está implementado: simulação de dados, CSV, importação em PostgreSQL, API versionada e dashboard web integrado.
+O fluxo completo está implementado: simulação de dados, CSV, importação em PostgreSQL, API versionada, banco em produção e dashboard web integrado.
