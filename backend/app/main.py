@@ -15,10 +15,13 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("plantpulse.api")
+
 API_PREFIX = "/api/v1"
+
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://plant-pulse-jmsp.vercel.app",
 ]
 
 app = FastAPI(title="PlantPulse API")
@@ -27,7 +30,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["*"],  
     allow_headers=["*"],
 )
 
