@@ -45,6 +45,8 @@ type EmptyAnalysisResponse = {
   message?: string | null;
 };
 
+type RawAnalysisApiResponse = AnalysisApiResponse | EmptyAnalysisResponse;
+
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
@@ -63,23 +65,19 @@ export async function getAnalysis(
   limit: number,
   sensorId?: string,
 ): Promise<AnalysisApiResponse> {
-  const payload = await fetchApi<AnalysisApiResponse | EmptyAnalysisResponse>(
+  const payload = await fetchApi<RawAnalysisApiResponse>(
     buildPath("/analysis", limit, sensorId),
   );
 
-  if (Array.isArray(payload.data)) {
-    return {
-      status: payload.status,
-      data: null,
-      message: payload.message,
-    };
-  }
-
-  return payload;
+  return {
+    status: payload.status,
+    data: Array.isArray(payload.data) ? null : payload.data,
+    message: payload.message,
+  };
 }
 
 
-async function fetchApi<T>(path: string): Promise<T> {
+async function fetchApi<T extends object>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     cache: "no-store",
   });
