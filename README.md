@@ -1,63 +1,74 @@
-# PlantPulse
+# 🌱 PlantPulse
 
-Projeto full-stack para simulacao, persistencia, analise e visualizacao de sinais de plantas.
+Sistema full-stack para simulação, persistência, análise e visualização de sinais de sensores de plantas.
 
-## Visao do projeto
+## 📊 Demonstração
 
-O PlantPulse organiza um fluxo completo de dados:
+### Visão geral do dashboard
 
-- geracao de sinais simulados
-- exportacao para CSV
-- ingestao em PostgreSQL
-- leitura e analise estatistica
-- exposicao via API FastAPI
-- visualizacao em dashboard web com Next.js
+![Dashboard Overview](docs/images/dashboard-overview.png)
 
-O foco do projeto e mostrar uma base clara, evolutiva e pronta para demonstracao em portfolio tecnico.
+### Filtro por sensor
 
-## Estrutura final
+![Dashboard Filtered](docs/images/dashboard-filtered.png)
+
+## Sobre o projeto
+
+O PlantPulse demonstra um fluxo completo de dados aplicado ao contexto de monitoramento de plantas.
+
+O projeto gera sinais simulados de sensores, exporta esses dados para CSV, importa os registros para PostgreSQL, expõe os dados por uma API FastAPI e apresenta as informações em um dashboard web construído com Next.js.
+
+A proposta é manter uma base técnica clara, reproduzível e útil para portfólio, sem adicionar complexidade desnecessária.
+
+O sistema cobre:
+
+- simulação de sinais plausíveis ao longo do tempo
+- persistência dos registros em PostgreSQL
+- leitura dos dados via API REST
+- análise estatística inicial
+- visualização em dashboard com gráfico, métricas e resumo interpretativo
+
+## Arquitetura
 
 ```text
 PlantPulse/
 |-- backend/
-|   |-- app/
-|   |-- data/
-|   |-- database/
-|   |-- data_processing/
-|   |-- sensor_simulation/
-|   |-- tests/
-|   |-- .env.example
+|   |-- app/                 # API FastAPI
+|   |-- database/            # conexão e schema PostgreSQL
+|   |-- data_processing/     # importação, leitura e análise
+|   |-- sensor_simulation/   # geração de sinais simulados
+|   |-- data/                # CSV gerado
+|   |-- tests/               # testes do backend
 |   `-- requirements.txt
+|
 |-- frontend/
-|   |-- app/
-|   |-- components/
-|   |-- lib/
-|   |-- .env.local.example
+|   |-- app/                 # rotas Next.js
+|   |-- components/          # componentes do dashboard
+|   |-- lib/                 # cliente da API
 |   |-- package.json
-|   `-- tsconfig.json
+|   `-- package-lock.json
+|
+|-- docs/                    # screenshots do projeto
 `-- README.md
 ```
 
-## Arquitetura
+Fluxo principal da arquitetura:
 
-### Backend
-
-O backend concentra a logica do projeto:
-
-- conexao com PostgreSQL
-- simulacao e ingestao de dados
-- leitura dos sinais
-- analise estatistica inicial
-- API REST versionada em `/api/v1`
-
-### Frontend
-
-O frontend consome a API existente e mostra:
-
-- grafico temporal de sinais
-- cards com metricas chave
-- resumo analitico
-- filtros por quantidade de registros e `sensor_id`
+```text
+Simulação
+    |
+    v
+CSV
+    |
+    v
+PostgreSQL
+    |
+    v
+API FastAPI
+    |
+    v
+Dashboard Next.js
+```
 
 ## Tecnologias
 
@@ -65,114 +76,67 @@ O frontend consome a API existente e mostra:
 
 - Python
 - FastAPI
-- psycopg2
 - PostgreSQL
+- psycopg2
+- python-dotenv
 - pytest
 
 ### Frontend
 
-- Next.js (App Router)
+- Next.js com App Router
 - TypeScript
 - TailwindCSS
 - Recharts
 
-## Funcionalidades principais
+## Funcionalidades
 
-- simulacao de sinais plausiveis de sensores
-- exportacao para CSV
-- importacao em lote para PostgreSQL
-- leitura recente dos dados com filtro opcional por sensor
-- analise com tendencia, variabilidade e anomalias
-- API padronizada e versionada
-- dashboard com filtros, grafico e resumo interpretativo
+- Geração de sinais simulados com padrão oscilatório, ruído leve e seed opcional.
+- Exportação dos sinais para CSV compatível com o schema do banco.
+- Importação em lote para PostgreSQL usando `executemany`.
+- Proteção contra duplicidade por `sensor_id` e `signal_timestamp`.
+- Leitura de sinais recentes com filtro opcional por sensor.
+- Análise estatística com média, mínimo, máximo, amplitude, tendência, variabilidade e anomalias.
+- API REST versionada em `/api/v1`.
+- Healthcheck da API.
+- Dashboard com gráfico temporal, cards de métricas, resumo analítico e filtros.
+- Tratamento de estados de loading, erro e ausência de dados no frontend.
 
-## Fluxo completo de dados
+## Fluxo de dados
 
-1. Crie o banco PostgreSQL:
+```text
+Simulação → CSV → PostgreSQL → API → Dashboard
+```
+
+Etapas do fluxo:
+
+1. Criar o banco PostgreSQL.
+2. Aplicar o schema da tabela `plant_signals`.
+3. Gerar o CSV com sinais simulados.
+4. Importar o CSV para o PostgreSQL.
+5. Subir o backend FastAPI.
+6. Subir o frontend Next.js.
+7. Acessar o dashboard.
+
+Durante a importação, registros duplicados com o mesmo `sensor_id` e `signal_timestamp` são ignorados pelo PostgreSQL.
+
+## Como rodar o projeto
+
+### 1. Criar banco PostgreSQL
+
+Acesse o PostgreSQL e crie o banco:
 
 ```sql
 CREATE DATABASE plantpulse;
 ```
 
-2. Aplique o schema inicial a partir da pasta `backend`:
+A partir da pasta `backend`, aplique o schema:
 
 ```powershell
 cd backend
 psql -h localhost -U postgres -d plantpulse -f database/schema.sql
 ```
 
-3. Gere o CSV simulado:
-
-```powershell
-python sensor_simulation/plant_signal_generator.py
-```
-
-4. Importe os dados do CSV para o PostgreSQL:
-
-```powershell
-python data_processing/insert_data.py
-```
-
-Durante a importacao, registros duplicados com o mesmo `sensor_id` e `signal_timestamp` sao ignorados pelo PostgreSQL.
-
-5. Suba o backend:
-
-```powershell
-uvicorn app.main:app --reload
-```
-
-6. Suba o frontend em outro terminal:
-
-```powershell
-cd frontend
-npm install
-npm run dev
-```
-
-O comando `npm install` instala as dependencias e gera/atualiza o `package-lock.json` quando necessario.
-
-7. Acesse o dashboard:
-
-```text
-http://localhost:3000/dashboard
-```
-
-## Como rodar o backend
-
-1. Entre na pasta:
-
-```powershell
-cd backend
-```
-
-2. Crie e ative a venv:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-
-3. Instale as dependencias:
-
-```powershell
-pip install -r requirements.txt
-```
-
-4. Crie o `.env`:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-5. Configure as credenciais do PostgreSQL.
-
-6. Se necessario, aplique o schema:
-
-```powershell
-psql -h localhost -U postgres -d plantpulse -f database/schema.sql
-```
-
-Para tabelas ja existentes, aplique a restricao de unicidade manualmente:
+Se a tabela já existir sem a restrição de unicidade, aplique:
 
 ```sql
 ALTER TABLE plant_signals
@@ -180,75 +144,143 @@ ADD CONSTRAINT plant_signals_sensor_timestamp_unique
 UNIQUE (sensor_id, signal_timestamp);
 ```
 
-7. Rode a API:
+### 2. Configurar e rodar o backend
+
+Entre na pasta do backend:
+
+```powershell
+cd backend
+```
+
+Crie e ative o ambiente virtual:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Instale as dependências:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Crie o arquivo de ambiente:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configure o `.env` com as credenciais do PostgreSQL:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=plantpulse
+DB_USER=postgres
+DB_PASSWORD=sua_senha
+```
+
+Gere o CSV simulado:
+
+```powershell
+python sensor_simulation/plant_signal_generator.py
+```
+
+Importe os dados para o banco:
+
+```powershell
+python data_processing/insert_data.py
+```
+
+Rode a API:
 
 ```powershell
 uvicorn app.main:app --reload
 ```
 
-Backend disponivel em:
+Endpoints principais:
 
-- `http://127.0.0.1:8000/api/v1`
+- `http://127.0.0.1:8000/api/v1/health`
+- `http://127.0.0.1:8000/api/v1/signals?limit=100`
+- `http://127.0.0.1:8000/api/v1/analysis?limit=100`
 - `http://127.0.0.1:8000/docs`
 
-## Como rodar o frontend
+### 3. Configurar e rodar o frontend
 
-1. Em outro terminal:
+Em outro terminal, entre na pasta do frontend:
 
 ```powershell
 cd frontend
 ```
 
-2. Instale as dependencias:
+Instale as dependências:
 
 ```powershell
 npm install
 ```
 
-3. Crie o `.env.local`:
+O `package-lock.json` deve ser mantido no repositório para deixar a instalação mais reproduzível.
+
+Crie o arquivo de ambiente:
 
 ```powershell
 Copy-Item .env.local.example .env.local
 ```
 
-4. Ajuste a URL da API, se necessario:
+Configure a URL da API:
 
 ```env
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api/v1
 ```
 
-5. Rode o dashboard:
+Rode o dashboard:
 
 ```powershell
 npm run dev
 ```
 
-Frontend disponivel em:
+Acesse:
 
-- `http://localhost:3000/dashboard`
+```text
+http://localhost:3000/dashboard
+```
 
 ## UX do dashboard
 
-O dashboard inclui:
+O dashboard foi pensado para ser direto, legível e funcional.
 
-- seletor de limite com 50, 100 e 200 registros
+Ele inclui:
+
+- seletor de limite com opções como 50, 100 e 200 registros
 - filtro opcional por `sensor_id`
-- botao de atualizacao manual
-- recarga automatica ao mudar os parametros
-- estados de loading, erro e ausencia de dados
+- botão para atualizar os dados manualmente
+- gráfico de linha com `signal_value` ao longo do tempo
+- cards com métricas principais da análise
+- resumo textual em português com interpretação do comportamento do sinal
+- estados de loading, erro e ausência de dados
 
-## Proximos passos
+A busca por `sensor_id` é aplicada ao clicar em `Atualizar dados`, evitando chamadas desnecessárias à API a cada tecla digitada.
 
-- testes automatizados do frontend
-- deploy do backend e do frontend
-- filtros mais ricos por periodo
-- comparacao entre sensores
-- historico de importacoes
+## Observações
 
-## Melhorias aplicadas nesta finalizacao
+- O projeto não usa ORM; a comunicação com PostgreSQL é feita com `psycopg2`.
+- A API possui CORS configurado para `http://localhost:3000` e `http://127.0.0.1:3000`.
+- A análise é estatística e interpretável, sem uso de IA ou machine learning.
+- A proteção contra duplicatas depende da restrição única em `(sensor_id, signal_timestamp)`.
+- Para tabelas com duplicatas já existentes, o `ALTER TABLE` de unicidade pode falhar até que os dados sejam corrigidos.
+- O backend e o frontend ficam separados em pastas próprias para facilitar execução e manutenção.
 
-- separacao real entre `backend/` e `frontend/`
-- eliminacao do conflito estrutural da pasta `app/`
-- tipagem do frontend refinada para `AnalysisData | null`
-- dashboard mais interativo e mais adequado para demonstracao
-- README atualizado para apresentacao profissional
+## Próximos passos
+
+- Adicionar testes automatizados para o frontend.
+- Criar filtros por intervalo de datas.
+- Melhorar comparação entre sensores.
+- Preparar deploy do backend e do frontend.
+- Documentar um fluxo de demonstração com dados de exemplo.
+
+## Status
+
+Projeto funcional para portfólio técnico.
+
+O fluxo completo está implementado: simulação de dados, CSV, importação em PostgreSQL, API versionada e dashboard web integrado.
