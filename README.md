@@ -1,17 +1,23 @@
 # PlantPulse
 
-Sistema full-stack para simulação, persistência, análise e visualização de sinais de sensores de plantas.
+Sistema full-stack para simulação, ingestão, análise e visualização de dados de sensores de plantas, com pipeline completo de dados e dashboard interativo em produção.
+
+## 🚀 Quick Overview
+
+- Backend: FastAPI (Python)
+- Frontend: Next.js (TypeScript)
+- Database: PostgreSQL (Neon)
+- Data pipeline: Simulation → CSV → PostgreSQL → API → Dashboard
+- Deploy:
+  - Frontend: Vercel
+  - Backend: Render
 
 ## Demo
 
-- Frontend: [https://plant-pulse-jmsp.vercel.app/dashboard](https://plant-pulse-jmsp.vercel.app/dashboard)
-- API healthcheck: [https://plantpulse-backend-4nvd.onrender.com/api/v1/health](https://plantpulse-backend-4nvd.onrender.com/api/v1/health)
+Acesse a aplicação online:
 
-Ambiente publicado:
-
-- Frontend hospedado na Vercel.
-- Backend FastAPI hospedado no Render.
-- Banco PostgreSQL hospedado no Neon.
+- Dashboard: https://plant-pulse-jmsp.vercel.app/dashboard  
+- API (healthcheck): https://plantpulse-backend-4nvd.onrender.com/api/v1/health
 
 ## Demonstração
 
@@ -25,19 +31,17 @@ Ambiente publicado:
 
 ## Sobre o projeto
 
-O PlantPulse demonstra um fluxo completo de dados aplicado ao contexto de monitoramento de plantas.
+O PlantPulse implementa um pipeline completo de dados aplicado ao monitoramento de sensores, incluindo simulação, ingestão, análise e visualização.
 
-O projeto gera sinais simulados de sensores, exporta esses dados para CSV, importa os registros para PostgreSQL, expõe os dados por uma API FastAPI e apresenta as informações em um dashboard web construído com Next.js.
+O projeto:
 
-A proposta é manter uma base técnica clara, reproduzível e útil para portfólio, sem adicionar complexidade desnecessária.
+- gera sinais simulados de sensores
+- exporta dados para CSV
+- importa registros para PostgreSQL
+- expõe os dados via API FastAPI
+- apresenta tudo em um dashboard Next.js
 
-O sistema cobre:
-
-- simulação de sinais plausíveis ao longo do tempo
-- persistência dos registros em PostgreSQL
-- leitura dos dados via API REST
-- análise estatística inicial
-- visualização em dashboard com gráfico, métricas e resumo interpretativo
+O projeto simula um cenário real de ingestão e análise de dados, semelhante a pipelines utilizados em aplicações de monitoramento e IoT.
 
 ## Arquitetura
 
@@ -66,22 +70,8 @@ PlantPulse/
 Fluxo principal da arquitetura:
 
 ```text
-Simulação
-    |
-    v
-CSV
-    |
-    v
-PostgreSQL
-    |
-    v
-API FastAPI
-    |
-    v
-Dashboard Next.js
+Simulação → CSV → PostgreSQL → API → Dashboard
 ```
-
-Em produção, esse fluxo usa Neon para o PostgreSQL, Render para a API e Vercel para o dashboard.
 
 ## Tecnologias
 
@@ -91,7 +81,6 @@ Em produção, esse fluxo usa Neon para o PostgreSQL, Render para a API e Vercel
 - FastAPI
 - PostgreSQL
 - psycopg2
-- python-dotenv
 - pytest
 
 ### Frontend
@@ -283,13 +272,11 @@ A busca por `sensor_id` é aplicada ao clicar em `Atualizar dados`, evitando cha
 
 ## Observações
 
-- O projeto está publicado com frontend na Vercel, backend no Render e banco PostgreSQL no Neon.
-- O projeto não usa ORM; a comunicação com PostgreSQL é feita com `psycopg2`.
-- A API possui CORS configurado para o ambiente local e para o domínio público da Vercel.
-- A análise é estatística e interpretável, sem uso de IA ou machine learning.
-- A proteção contra duplicatas depende da restrição única em `(sensor_id, signal_timestamp)`.
-- Para tabelas com duplicatas já existentes, o `ALTER TABLE` de unicidade pode falhar até que os dados sejam corrigidos.
-- O backend e o frontend ficam separados em pastas próprias para facilitar execução e manutenção.
+- Backend hospedado no Render  
+- Frontend hospedado na Vercel  
+- Banco PostgreSQL hospedado no Neon  
+- Comunicação via API REST  
+- CORS configurado para integração entre frontend e backend em produção
 
 ## Próximos passos
 
